@@ -8,7 +8,8 @@ import (
 )
 
 type DB struct {
-	Db *gorm.DB
+	Db      *gorm.DB
+	DbScope *gorm.Scope
 }
 
 func InitDb() (con *DB) {
