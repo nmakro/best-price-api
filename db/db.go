@@ -21,9 +21,5 @@ func InitDb() (con *DB) {
 	}
 
 	fmt.Println("Succesfull connection to DB")
-
-	//dbCon.AutoMigrate(&model.Products{})
-
-	fmt.Println("Db migrated!")
 	return &DB{Db: dbCon}
 }

@@ -1,8 +1,11 @@
 package model
 
 import (
+	"fmt"
+
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/nmakro/best-price-api/db"
+	"github.com/nmakro/best-price-api/utils"
 )
 
 type DbModel struct {
@@ -11,17 +14,33 @@ type DbModel struct {
 	// Category *Category
 }
 
+type Response struct {
+	Meta       utils.MetaData `json:"_meta"`
+	Products   []Product      `json:"products,omitempty"`
+	Categories []Category     `json:"categories,omitempty"`
+}
+
 func (m *DbModel) Init() {
 	m.DbCon = db.InitDb()
 	m.DbCon.DbScope = m.DbCon.Db.NewScope(m.DbCon.Db)
 	m.DbCon.Db.AutoMigrate(&Product{}, &Category{})
+	m.DbCon.Db.Model(&Product{}).AddForeignKey("category_id", "categories(id)", "RESTRICT", "RESTRICT")
+	fmt.Println("Db migrated!")
 
+	// for i := 0; i < 20; i++ {
+	// 	category := new(Category)
+	// 	category.Title = fmt.Sprintf("title %d", i)
+	// 	category.Position = i
+	// 	category.ImageURL = fmt.Sprintf("http://image-url.com/%d", i)
+	// 	m.DbCon.Db.Create(&category)
+
+	// }
 	// for i := 0; i < 200; i++ {
-	// 	product := new(Products)
+	// 	product := new(Product)
 	// 	product.Title = fmt.Sprintf("title %d", i)
-	// 	product.Category = fmt.Sprint("category %d", i%10)
+	// 	product.CategoryID = uint((i % 20) + 1)
 	// 	product.Description = fmt.Sprintf("description %d", i)
-	// 	product.Price = i * 3
+	// 	product.Price = float32(i) * 3.0
 	// 	m.DbCon.Db.Create(&product)
 
 	// }
