@@ -28,7 +28,7 @@ Supported actions are:
 <li>get product/category using GET</li>
 <li>list products/categories using GET</li>
 <li>listing supports pagination with page/per_page and order by asc/desc </li>
-<li>POST, DELETE and UPDATE require authorization. Just use username and pass from basicAuth used [here] https://github.com/nmakro/best-price-api/blob/master/server/server.go#L18
+<li>POST, DELETE and UPDATE require authorization. Just use username and pass from basicAuth used inside the server initilization.
  </li>
 </ol> 
 
