@@ -10,8 +10,6 @@ import (
 
 type DbModel struct {
 	DbCon *db.DB
-	// Products *Product
-	// Category *Category
 }
 
 type Response struct {

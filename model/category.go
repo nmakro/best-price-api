@@ -1,7 +1,8 @@
 package model
 
 import (
-	"time"
+	"fmt"
+	"strconv"
 
 	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/gofiber/fiber"
@@ -11,12 +12,12 @@ import (
 
 type Category struct {
 	gorm.Model
-	Title     string     `json:"title" gorm:"unique"`
-	Position  int        `json:"position"`
-	ImageURL  string     `json:"image_url"`
-	DeletedAt *time.Time `json:"deleted_at" sql:"index"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
+	Title    string `json:"title" gorm:"unique"`
+	Position int    `json:"position"`
+	ImageURL string `json:"image_url"`
+	// DeletedAt *time.Time `json:"deleted_at" sql:"index"`
+	// CreatedAt time.Time  `json:"created_at"`
+	// UpdatedAt time.Time  `json:"updated_at"`
 }
 
 func (m *DbModel) CreateCategory(ctx *fiber.Ctx) {
@@ -30,7 +31,10 @@ func (m *DbModel) CreateCategory(ctx *fiber.Ctx) {
 	if category.Title == "" {
 		ctx.Status(402).Send("Mandatory field Title is missing.\n")
 	}
-	db.Create(&category)
+	fmt.Println(category)
+	if err := db.Create(&category).Error; err != nil {
+		ctx.Status(500).Send(err.Error())
+	}
 	ctx.JSON(category)
 }
 
@@ -49,22 +53,52 @@ func (m *DbModel) GetCategories(ctx *fiber.Ctx) {
 func (m *DbModel) GetCategory(ctx *fiber.Ctx) {
 	db := m.DbCon.Db
 	id := ctx.Params("id")
-	var category []Category
+	var category Category
 	db.Find(&category, id)
+	if category == (Category{}) {
+		ctx.Status(404).Send("Category not found!\n")
+		return
+	}
 	ctx.JSON(&category)
+}
+
+func (m *DbModel) UpdateCategory(ctx *fiber.Ctx) {
+	db := m.DbCon.Db
+	id := ctx.Params("id")
+
+	category := new(Category)
+	if err := ctx.BodyParser(category); err != nil {
+		ctx.Status(422).Send(err)
+		return
+	}
+	categoryInDb := new(Category)
+
+	db.First(&categoryInDb, id)
+	if categoryInDb == &(Category{}) {
+		ctx.Status(404).Send("Category not found!\n")
+	}
+
+	category.ID = categoryInDb.ID
+
+	if err := db.Debug().Model(&categoryInDb).Updates(category).Error; err != nil {
+		ctx.Status(500).Send("Cannot update category.\n")
+	}
 }
 
 func (m *DbModel) DeleteCategory(ctx *fiber.Ctx) {
 	db := m.DbCon.Db
 	id := ctx.Params("id")
-	if id == "" {
-		ctx.Status(400).Send("Category id is missing\n")
-	}
 	var category Category
-	//db.First(&category, id)
-	if category == (Category{}) {
-		ctx.Status(404).Send("Not found!\n")
+	a_id, err := strconv.Atoi(id)
+	if err == nil {
+		category.ID = uint(a_id)
+	} else {
+		ctx.Status(400).Send("Unable to parse category id!\n")
+		return
 	}
-	db.Delete(category)
-
+	if err := db.Delete(category).Error; err != nil {
+		ctx.Status(500).Send("Delete failed!\n")
+	}
+	db.Model(category).Unscoped().Debug().Update("title", nil)
+	ctx.Status(204)
 }

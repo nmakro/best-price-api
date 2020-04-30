@@ -29,7 +29,7 @@ func CreateResponse(paginator *pagination.Paginator) (m MetaData) {
 func SetupPager(ctx *fiber.Ctx, db *gorm.DB) (par pagination.Param) {
 	var orderBy []string
 	page, _ := strconv.Atoi(ctx.Query("page"))
-	limit, _ := strconv.Atoi(ctx.Query("per_page"))
+	per_page, _ := strconv.Atoi(ctx.Query("per_page"))
 	sort := strings.SplitN(ctx.Query("sort"), ":", 2)
 
 	orderBy = []string{"id desc"}
@@ -39,7 +39,7 @@ func SetupPager(ctx *fiber.Ctx, db *gorm.DB) (par pagination.Param) {
 	}
 	var p pagination.Param
 	p.DB = db
-	p.Limit = limit
+	p.Limit = per_page
 	p.Page = page
 	p.OrderBy = orderBy
 	p.ShowSQL = true

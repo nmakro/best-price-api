@@ -1,8 +1,7 @@
 package model
 
 import (
-	"fmt"
-	"time"
+	"strconv"
 
 	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/gofiber/fiber"
@@ -13,15 +12,15 @@ import (
 type Product struct {
 	gorm.Model
 	//ID          int        `gorm:"type:int;primary_key"`
-	Category    Category   `json:"-" gorm:"foreignkey:CategoryID; AssociationForeignKey:Refer"`
-	CategoryID  uint       `json:"category_id"`
-	Title       string     `json:"title"`
-	ImageURL    string     `json:"image_url"`
-	Price       float32    `json:"price"`
-	Description string     `json:"description"`
-	DeletedAt   *time.Time `json:"deleted_at" sql:"index"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
+	Category    Category `json:"-" gorm:"foreignkey:CategoryID; AssociationForeignKey:Refer"`
+	CategoryID  uint     `json:"category_id"`
+	Title       string   `json:"title"`
+	ImageURL    string   `json:"image_url"`
+	Price       float32  `json:"price"`
+	Description string   `json:"description"`
+	// DeletedAt   *time.Time `json:"deleted_at" sql:"index"`
+	// CreatedAt   time.Time  `json:"created_at"`
+	// UpdatedAt   time.Time  `json:"updated_at"`
 }
 
 func (m *DbModel) CreateProduct(ctx *fiber.Ctx) {
@@ -42,10 +41,13 @@ func (m *DbModel) CreateProduct(ctx *fiber.Ctx) {
 func (m *DbModel) GetProduct(ctx *fiber.Ctx) {
 	db := m.DbCon.Db
 	id := ctx.Params("id")
-	fmt.Println(id)
-	var products []Product
-	db.Find(&products, id)
-	ctx.JSON(&products)
+	var product Product
+	db.Find(&product, id)
+	if product == (Product{}) {
+		ctx.Status(404).Send("Product not found!\n")
+		return
+	}
+	ctx.JSON(&product)
 }
 
 func (m *DbModel) GetProducts(ctx *fiber.Ctx) {
@@ -68,7 +70,7 @@ func (m *DbModel) UpdateProduct(ctx *fiber.Ctx) {
 
 	db.First(&productInDb, id)
 	if productInDb == &(Product{}) {
-		ctx.Status(404).Send("Product Not found!\n")
+		ctx.Status(404).Send("Product not found!\n")
 	}
 	product := new(Product)
 	if err := ctx.BodyParser(product); err != nil {
@@ -78,20 +80,23 @@ func (m *DbModel) UpdateProduct(ctx *fiber.Ctx) {
 	product.ID = productInDb.ID
 
 	if err := db.Debug().Model(&productInDb).Updates(product).Error; err != nil {
-		ctx.Status(500).Send("Cannot update product.")
+		ctx.Status(500).Send("Cannot update product.\n")
 	}
 }
 
 func (m *DbModel) DeleteProduct(ctx *fiber.Ctx) {
 	db := m.DbCon.Db
 	id := ctx.Params("id")
-	if id == "" {
-		ctx.Status(400).Send("Product id is missing\n")
-	}
 	var product Product
-	//db.First(&product, id)
-	if product == (Product{}) {
-		ctx.Status(404).Send("Not found!\n")
+	a_id, err := strconv.Atoi(id)
+	if err == nil {
+		product.ID = uint(a_id)
+	} else {
+		ctx.Status(400).Send("Unable to parse product id!\n")
+		return
 	}
-	db.Delete(product)
+	if err := db.Delete(product).Error; err != nil {
+		ctx.Status(500).Send("Delete failed!\n")
+	}
+	ctx.Status(204)
 }
