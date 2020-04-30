@@ -1,41 +1,39 @@
-<h1>A minimal rest-api using go and MySql.</h1>
+
+# A minimal REST API using Go and MySQL.
+
+## Features
+ - get product/category using `GET`
+ - list products/categories using `GET`
+ - create product/category with `POST`
+ - update product/category using `PATCH`
+ - listing supports pagination with page/per_page and order by asc/desc 
+ - `POST`, `DELETE` and `UPDATE` require authorization. Just use [username and pass](https://github.com/nmakro/best-price-api/blob/master/server/server.go#L18) from basicAuth used inside the server initialization.
 
 
-<h5>Installation steps:</h5>
+## Install
 
-<ul>
-<li>git clone https://github.com/nmakro/best-price-api.git</li>
- or
-<li>go get github.com/nmakro/best-price-api</li>
+### Get the app
 
-Note: If using git clone you must manually install the project dependencies.
-</ul>
+ - $ `go get github.com/nmakro/best-price-api`
 
-<h5>Requirements:</h5>
-A running instance of mySql running on port: 3306.
-You can change that later in the configuration.
+Or if you prefer to git clone and manually install the project dependencies:
 
-<h5>Basic usage</h5>
+ - $ `git clone https://github.com/nmakro/best-price-api.git`
+ 
+### Setup the DB
+Default configuration expects a running instance of mySQL running on port `3306`. You can change that to match your setup.
 
 Import the example dump file or create a new db named `best_price` with a user name best-price and password `123`.
 
-From the root directory execute: go run main.go.
+ 
+## Use
 
-Supported actions are:
-<ol>
-<li>create product/category with POST</li>
-<li>update product/category using PATCH</li>
-<li>get product/category using GET</li>
-<li>list products/categories using GET</li>
-<li>listing supports pagination with page/per_page and order by asc/desc </li>
-<li>POST, DELETE and UPDATE require authorization. Just use username and pass from basicAuth used inside the server initilization.
- </li>
-</ol> 
+### Basic usage
 
-<h5>Examples</h5>
+$ `go run main.go`
 
-* **Sample Call:**
-curl -i "http://localhost:3000/best-price-api/v1/products/25"
+#### Fetch Single Product
+$ `curl -i "http://localhost:3000/best-price-api/v1/products/25"`
               
 HTTP/1.1 200 OK
 Date: Thu, 30 Apr 2020 10:20:06 GMT
@@ -56,8 +54,9 @@ Content-Length: 191
 }
 ```
 
-* **Sample List:**
-curl -i "http://localhost:3000/best-price-api/v1/products?per_page=4&page=1&order=price:desc"
+### List products from Page 4 with Ordering
+
+$ `curl -i "http://localhost:3000/best-price-api/v1/products?per_page=4&page=1&order=price:desc"`
 HTTP/1.1 200 OK
 Date: Thu, 30 Apr 2020 10:29:11 GMT
 Content-Type: application/json
@@ -116,5 +115,3 @@ Content-Length: 896
     }]
 }
 ```
-
-
