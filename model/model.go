@@ -25,24 +25,24 @@ func (m *DbModel) Init() {
 	m.DbCon.Db.Model(&Product{}).AddForeignKey("category_id", "categories(id)", "RESTRICT", "RESTRICT")
 	fmt.Println("Db migrated!")
 
-	// categoriesArray := []string{"books", "tech", "clothes", "music", "sports"}
-	// for i := 0; i < 5; i++ {
-	// 	category := new(Category)
-	// 	category.Title = categoriesArray[i]
-	// 	category.Position = i
-	// 	category.ImageURL = fmt.Sprintf("http://image-url.com/%d", i)
-	// 	m.DbCon.Db.Create(&category)
+	categoriesArray := []string{"books", "tech", "clothes", "music", "sports"}
+	for i := 0; i < 5; i++ {
+		category := new(Category)
+		category.Title = categoriesArray[i]
+		category.Position = i
+		category.ImageURL = fmt.Sprintf("http://image-url.com/%d", i)
+		m.DbCon.Db.Create(&category)
 
-	// }
-	// for i := 0; i < 200; i++ {
-	// 	product := new(Product)
-	// 	product.Title = fmt.Sprintf("title %d", i)
-	// 	product.CategoryID = uint((i % 5) + 1)
-	// 	product.Description = fmt.Sprintf("description %d", i)
-	// 	product.Price = float32(i) * 3.0
-	// 	m.DbCon.Db.Create(&product)
+	}
+	for i := 0; i < 200; i++ {
+		product := new(Product)
+		product.Title = fmt.Sprintf("title %d", i)
+		product.CategoryID = uint((i % 5) + 1)
+		product.Description = fmt.Sprintf("description %d", i)
+		product.Price = float32(i) * 3.0
+		m.DbCon.Db.Create(&product)
 
-	// }
+	}
 
 }
 

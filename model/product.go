@@ -2,25 +2,25 @@ package model
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/gofiber/fiber"
-	"github.com/jinzhu/gorm"
 	"github.com/nmakro/best-price-api/utils"
 )
 
 type Product struct {
-	gorm.Model
-	//ID          int        `gorm:"type:int;primary_key"`
-	Category    Category `json:"-" gorm:"foreignkey:CategoryID; AssociationForeignKey:Refer"`
-	CategoryID  uint     `json:"category_id"`
-	Title       string   `json:"title"`
-	ImageURL    string   `json:"image_url"`
-	Price       float32  `json:"price"`
-	Description string   `json:"description"`
-	// DeletedAt   *time.Time `json:"deleted_at" sql:"index"`
-	// CreatedAt   time.Time  `json:"created_at"`
-	// UpdatedAt   time.Time  `json:"updated_at"`
+	//gorm.Model
+	ID          uint       `json:"id" gorm:"primary_key;AUTO_INCREMENT"`
+	Category    Category   `json:"-" gorm:"foreignkey:CategoryID; AssociationForeignKey:Refer"`
+	CategoryID  uint       `json:"category_id"`
+	Title       string     `json:"title"`
+	ImageURL    string     `json:"image_url"`
+	Price       float32    `json:"price"`
+	Description string     `json:"description"`
+	DeletedAt   *time.Time `json:"deleted_at" sql:"index"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
 }
 
 func (m *DbModel) CreateProduct(ctx *fiber.Ctx) {

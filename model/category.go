@@ -2,21 +2,22 @@ package model
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/biezhi/gorm-paginator/pagination"
 	"github.com/gofiber/fiber"
-	"github.com/jinzhu/gorm"
 	"github.com/nmakro/best-price-api/utils"
 )
 
 type Category struct {
-	gorm.Model
-	Title    string `json:"title" gorm:"unique"`
-	Position int    `json:"position"`
-	ImageURL string `json:"image_url"`
-	// DeletedAt *time.Time `json:"deleted_at" sql:"index"`
-	// CreatedAt time.Time  `json:"created_at"`
-	// UpdatedAt time.Time  `json:"updated_at"`
+	//gorm.Model
+	ID        uint       `json:"id" gorm:"primary_key;AUTO_INCREMENT"`
+	Title     string     `json:"title" gorm:"unique"`
+	Position  int        `json:"position"`
+	ImageURL  string     `json:"image_url"`
+	DeletedAt *time.Time `json:"deleted_at" sql:"index"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
 }
 
 func (m *DbModel) CreateCategory(ctx *fiber.Ctx) {
