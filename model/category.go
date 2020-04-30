@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/biezhi/gorm-paginator/pagination"
@@ -25,13 +24,12 @@ func (m *DbModel) CreateCategory(ctx *fiber.Ctx) {
 
 	category := new(Category)
 	if err := ctx.BodyParser(category); err != nil {
-		ctx.Status(503).Send(err)
+		ctx.Status(400).Send(err)
 		return
 	}
 	if category.Title == "" {
-		ctx.Status(402).Send("Mandatory field Title is missing.\n")
+		ctx.Status(400).Send("Mandatory field Title is missing.\n")
 	}
-	fmt.Println(category)
 	if err := db.Create(&category).Error; err != nil {
 		ctx.Status(500).Send(err.Error())
 	}
@@ -74,7 +72,7 @@ func (m *DbModel) UpdateCategory(ctx *fiber.Ctx) {
 	categoryInDb := new(Category)
 
 	db.First(&categoryInDb, id)
-	if categoryInDb == &(Category{}) {
+	if categoryInDb.ID == 0 {
 		ctx.Status(404).Send("Category not found!\n")
 	}
 

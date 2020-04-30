@@ -69,7 +69,7 @@ func (m *DbModel) UpdateProduct(ctx *fiber.Ctx) {
 	productInDb := new(Product)
 
 	db.First(&productInDb, id)
-	if productInDb == &(Product{}) {
+	if productInDb.ID == 0 {
 		ctx.Status(404).Send("Product not found!\n")
 	}
 	product := new(Product)

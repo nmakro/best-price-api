@@ -25,9 +25,10 @@ func (m *DbModel) Init() {
 	m.DbCon.Db.Model(&Product{}).AddForeignKey("category_id", "categories(id)", "RESTRICT", "RESTRICT")
 	fmt.Println("Db migrated!")
 
-	// for i := 0; i < 20; i++ {
+	// categoriesArray := []string{"books", "tech", "clothes", "music", "sports"}
+	// for i := 0; i < 5; i++ {
 	// 	category := new(Category)
-	// 	category.Title = fmt.Sprintf("title %d", i)
+	// 	category.Title = categoriesArray[i]
 	// 	category.Position = i
 	// 	category.ImageURL = fmt.Sprintf("http://image-url.com/%d", i)
 	// 	m.DbCon.Db.Create(&category)
@@ -36,7 +37,7 @@ func (m *DbModel) Init() {
 	// for i := 0; i < 200; i++ {
 	// 	product := new(Product)
 	// 	product.Title = fmt.Sprintf("title %d", i)
-	// 	product.CategoryID = uint((i % 20) + 1)
+	// 	product.CategoryID = uint((i % 5) + 1)
 	// 	product.Description = fmt.Sprintf("description %d", i)
 	// 	product.Price = float32(i) * 3.0
 	// 	m.DbCon.Db.Create(&product)
