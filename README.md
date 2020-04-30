@@ -54,7 +54,7 @@ Content-Length: 191
 }
 ```
 
-### List products from Page 4 with Ordering
+### List products from Page 1 with 4 results with Ordering
 
 $ `curl -i "http://localhost:3000/best-price-api/v1/products?per_page=4&page=1&order=price:desc"`
 HTTP/1.1 200 OK
