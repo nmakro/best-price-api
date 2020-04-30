@@ -30,9 +30,11 @@ func (m *DbModel) CreateCategory(ctx *fiber.Ctx) {
 	}
 	if category.Title == "" {
 		ctx.Status(400).Send("Mandatory field Title is missing.\n")
+		return
 	}
 	if err := db.Create(&category).Error; err != nil {
 		ctx.Status(500).Send(err.Error())
+		return
 	}
 	ctx.JSON(category)
 }
@@ -75,12 +77,14 @@ func (m *DbModel) UpdateCategory(ctx *fiber.Ctx) {
 	db.First(&categoryInDb, id)
 	if categoryInDb.ID == 0 {
 		ctx.Status(404).Send("Category not found!\n")
+		return
 	}
 
 	category.ID = categoryInDb.ID
 
 	if err := db.Debug().Model(&categoryInDb).Updates(category).Error; err != nil {
 		ctx.Status(500).Send("Cannot update category.\n")
+		return
 	}
 }
 
@@ -97,6 +101,7 @@ func (m *DbModel) DeleteCategory(ctx *fiber.Ctx) {
 	}
 	if err := db.Delete(category).Error; err != nil {
 		ctx.Status(500).Send("Delete failed!\n")
+		return
 	}
 	db.Model(category).Unscoped().Debug().Update("title", nil)
 	ctx.Status(204)

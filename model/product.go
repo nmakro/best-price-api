@@ -71,6 +71,7 @@ func (m *DbModel) UpdateProduct(ctx *fiber.Ctx) {
 	db.First(&productInDb, id)
 	if productInDb.ID == 0 {
 		ctx.Status(404).Send("Product not found!\n")
+		return
 	}
 	product := new(Product)
 	if err := ctx.BodyParser(product); err != nil {
@@ -97,6 +98,7 @@ func (m *DbModel) DeleteProduct(ctx *fiber.Ctx) {
 	}
 	if err := db.Delete(product).Error; err != nil {
 		ctx.Status(500).Send("Delete failed!\n")
+		return
 	}
 	ctx.Status(204)
 }
