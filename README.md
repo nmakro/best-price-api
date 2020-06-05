@@ -1,5 +1,5 @@
 
-# A minimal REST API using Go and MySQL.
+# A minimal REST API using Go,MySQL and ORM.
 
 ## Features
  - get product/category using `GET`
